@@ -14,4 +14,7 @@ class ParkingAdmin(admin.ModelAdmin):
     finished.boolean = True
 
 
-admin.site.register(Report)
+@admin.register(Report)
+class ReportAdmin(admin.ModelAdmin):
+    readonly_fields = ("data", "created_at", "updated_at")
+    list_display = ("created_at", "updated_at")
