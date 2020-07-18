@@ -1,0 +1,61 @@
+version: '3.3'
+services:
+  app:
+    image: eltonplima/celery_demo:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    depends_on:
+      - postgres
+      - celery
+    env_file:
+      - variables.env
+    environment:
+      - ENVIRONMENT=web
+  celery:
+    image: eltonplima/celery_demo:latest
+    ports:
+      - "6899-6910:6899-6910"
+    depends_on:
+      - postgres
+      - rabbitmq
+    env_file:
+      - variables.env
+    environment:
+      - ENVIRONMENT=celery
+
+  #############################################################################
+  # Support services
+  #############################################################################
+  postgres:
+    image: postgres:12
+    env_file:
+      - variables.env
+    volumes:
+      - postgres:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+  rabbitmq:
+    image: rabbitmq:management
+    env_file:
+      - variables.env
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+
+  #############################################################################
+  # Optional support services
+  #############################################################################
+  portainer:
+    image: portainer/portainer
+    ports:
+      - "8080:8000"
+      - "9000:9000"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - portainer_data:/data
+volumes:
+  postgres:
+  portainer_data:
