@@ -42,10 +42,8 @@ def schedule_parking_finish(instance, *_, **__):
         "enabled": True,
         "task": "parking.tasks.finish_parking",
         "kwargs": json.dumps({"parking_id": instance.id}),
+        "one_off": True,
     }
-
-    if end_at > timezone.now():
-        defaults["ended_at"] = None
 
     PeriodicTask.objects.update_or_create(
         name=f"Finish parking for {instance.plate}", defaults=defaults,
