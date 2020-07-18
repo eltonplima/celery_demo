@@ -4,7 +4,6 @@ from django.contrib.postgres.fields import JSONField
 from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
-from django.utils import timezone
 from django_celery_beat.models import CrontabSchedule, PeriodicTask
 
 
@@ -48,3 +47,12 @@ def schedule_parking_finish(instance, *_, **__):
     PeriodicTask.objects.update_or_create(
         name=f"Finish parking for {instance.plate}", defaults=defaults,
     )
+
+
+@receiver(post_save, sender=PeriodicTask)
+def inject_periodic_task_id_on_kwargs(instance, *_, **__):
+    kwargs = json.loads(instance.kwargs)
+    if "periodic_task_id" not in kwargs:
+        kwargs["periodic_task_id"] = instance.id
+        instance.kwargs = json.dumps(kwargs)
+        instance.save()
