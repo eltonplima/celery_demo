@@ -21,4 +21,4 @@ def parking_report():
     qs = Parking.objects.all()
     data = serializers.serialize("json", qs)
     Report.objects.create(data=data)
-    return json.dumps({timezone.now().isoformat(): qs.count()})
+    return {"created_on": timezone.now().isoformat(), "records_processed": qs.count()}
