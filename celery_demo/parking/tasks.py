@@ -8,14 +8,14 @@ from .models import Parking, Report
 
 
 @shared_task(queue="finish_parking")
-def finish_parking(parking_id: int, *_, **_):
+def finish_parking(parking_id: int, *_args, **_kwargs):
     ended_at = timezone.now()
     Parking.objects.filter(id=parking_id).update(ended_at=ended_at)
     return {"ended_at": ended_at}
 
 
 @shared_task(queue="parking_report")
-def parking_report(*_, **_):
+def parking_report(*_args, **_kwargs):
     qs = Parking.objects.all()
     data = serializers.serialize("json", qs)
     Report.objects.create(data=data)
