@@ -7,7 +7,7 @@ authors = ["eltonplima <eltonplima@gmail.com>"]
 [tool.poetry.dependencies]
 python = "^3.8"
 django = "^3.0.8"
-django-celery-results = "^1.2.1"
+django-celery-results = "^2.4.0"
 django-celery-beat = "^2.0.0"
 environs = "^8.0.0"
 dj-database-url = "^0.5.0"
